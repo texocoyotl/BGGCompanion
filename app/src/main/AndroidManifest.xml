@@ -20,6 +20,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".HotListDownloader"
+            android:exported="false"></service>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7e539b376b77ff64a6943bf0409b6839b1ec7c7b" />
     </application>
 
 </manifest>

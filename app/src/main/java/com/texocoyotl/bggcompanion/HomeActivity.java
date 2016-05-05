@@ -1,8 +1,14 @@
 package com.texocoyotl.bggcompanion;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -14,8 +20,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.crashlytics.android.Crashlytics;
 import com.texocoyotl.bggcompanion.xmlpojo.APIServices;
 import com.texocoyotl.bggcompanion.xmlpojo.hotlist.HotListResult;
+
+import io.fabric.sdk.android.Fabric;
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,43 +34,26 @@ import retrofit2.Retrofit;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        LoaderManager.LoaderCallbacks<Cursor>{
 
-    public static final String BASE_URL = "http://www.boardgamegeek.com/xmlapi2/";
     private static final String TAG = HomeActivity.class.getSimpleName() + "TAG_";
+    private static final int HOT_LIST_LOADER = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_home);
         initViews();
 
+        getSupportLoaderManager().initLoader(HOT_LIST_LOADER, null, this);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(SimpleXmlConverterFactory.create())
-                .build();
 
-        APIServices apiService = retrofit.create(APIServices.class);
 
-        String type = "boardgame";
-
-        Call<HotListResult> call = apiService.getHotList(type);
-        call.enqueue(new Callback<HotListResult>() {
-            @Override
-            public void onResponse(Call<HotListResult> call, Response<HotListResult> response) {
-                int statusCode = response.code();
-                HotListResult result = response.body();
-
-                Log.d(TAG, "onResponse: " + result);
-            }
-
-            @Override
-            public void onFailure(Call<HotListResult> call, Throwable t) {
-                Log.d(TAG, "onFailure: " + t.getMessage());
-                // Log error here since request failed
-            }
-        });
+        //TODO MOVE THE RETROFIT CODE TO A LOADER
+        //TODO CREATE THE CONTENT PROVIDER TO FETCH HOT LIST FROM DB, THEN IF NO RESULT, RUN RETROFIT AND INSERT DATA
+        //TODO CREATE SQLHELPER WITH ONLY ONE GAME TABLE (ID, NAME, THUMBNAIL, YEARPUBLISHED)
 
     }
 
@@ -142,5 +135,30 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(
+                this,
+                Uri.parse("content://none"),
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data == null){
+            Intent downloader = new Intent(this, HotListDownloader.class);
+            startService(downloader);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
