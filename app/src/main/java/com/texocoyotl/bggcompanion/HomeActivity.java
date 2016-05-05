@@ -141,7 +141,7 @@ public class HomeActivity extends AppCompatActivity
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(
                 this,
-                Uri.parse("content://none"),
+                null,
                 null,
                 null,
                 null,
