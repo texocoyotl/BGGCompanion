@@ -3,6 +3,7 @@ package com.texocoyotl.bggcompanion;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,16 +14,57 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.texocoyotl.bggcompanion.xmlpojo.APIServices;
+import com.texocoyotl.bggcompanion.xmlpojo.hotlist.HotListResult;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
+
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String BASE_URL = "http://www.boardgamegeek.com/xmlapi2/";
+    private static final String TAG = HomeActivity.class.getSimpleName() + "TAG_";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        initViews();
 
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(SimpleXmlConverterFactory.create())
+                .build();
+
+        APIServices apiService = retrofit.create(APIServices.class);
+
+        String type = "boardgame";
+
+        Call<HotListResult> call = apiService.getHotList(type);
+        call.enqueue(new Callback<HotListResult>() {
+            @Override
+            public void onResponse(Call<HotListResult> call, Response<HotListResult> response) {
+                int statusCode = response.code();
+                HotListResult result = response.body();
+
+                Log.d(TAG, "onResponse: " + result);
+            }
+
+            @Override
+            public void onFailure(Call<HotListResult> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.getMessage());
+                // Log error here since request failed
+            }
+        });
+
+    }
+
+    private void initViews() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,6 +73,9 @@ public class HomeActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -52,12 +97,12 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.home, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
