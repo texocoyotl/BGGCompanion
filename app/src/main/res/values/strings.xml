@@ -7,4 +7,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_tab">TabActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="fabric_api_key">7e539b376b77ff64a6943bf0409b6839b1ec7c7b</string>
 </resources>

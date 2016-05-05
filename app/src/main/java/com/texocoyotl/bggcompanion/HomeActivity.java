@@ -51,7 +51,6 @@ public class HomeActivity extends AppCompatActivity
 
 
 
-        //TODO MOVE THE RETROFIT CODE TO A LOADER
         //TODO CREATE THE CONTENT PROVIDER TO FETCH HOT LIST FROM DB, THEN IF NO RESULT, RUN RETROFIT AND INSERT DATA
         //TODO CREATE SQLHELPER WITH ONLY ONE GAME TABLE (ID, NAME, THUMBNAIL, YEARPUBLISHED)
 
@@ -141,7 +140,7 @@ public class HomeActivity extends AppCompatActivity
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(
                 this,
-                null,
+                Uri.parse("content://none"),
                 null,
                 null,
                 null,

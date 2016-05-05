@@ -25,10 +25,12 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        manifestPlaceholders = [ fabric_api_key: FabricAPIKey]
     }
     buildTypes {
-        all{
-            resValue "string", "fabric_api_key", FabricAPIKey
+        debug{
+
         }
         release {
             minifyEnabled false
