@@ -1,5 +1,6 @@
 package com.texocoyotl.bggcompanion;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
+import com.texocoyotl.bggcompanion.database.Contract;
 import com.texocoyotl.bggcompanion.xmlpojo.APIServices;
 import com.texocoyotl.bggcompanion.xmlpojo.hotlist.HotListResult;
 
@@ -49,11 +51,32 @@ public class HomeActivity extends AppCompatActivity
 
         getSupportLoaderManager().initLoader(HOT_LIST_LOADER, null, this);
 
+        //insertTestRow();
+//        Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
+//        getContentResolver().delete(bgUri, null, null);
 
+        //TODO: EVALUATE IF FETCHING DETAIL DATA IN TWO STEPS OR ONE BIG STEP
 
-        //TODO CREATE THE CONTENT PROVIDER TO FETCH HOT LIST FROM DB, THEN IF NO RESULT, RUN RETROFIT AND INSERT DATA
-        //TODO CREATE SQLHELPER WITH ONLY ONE GAME TABLE (ID, NAME, THUMBNAIL, YEARPUBLISHED)
+        //TODO: ADD A RECYCLERVIEW WITH A CURSOR ADAPTER THAT GETS SWAPED WITH THE RESULT OF THE LOADER
+        //TODO: ADD A DETAIL ACTIVITY THAT FOLLOWS THE SAME LOGIC OF LOCAL DATA / DOWNLOAD.
+        //TODO: USE FIELD LAST_UPDATED AS FILTER WHEN SYNC-ING
 
+    }
+
+    private void insertTestRow() {
+        Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(Contract.BoardgameEntry.COLUMN_BGG_ID, 2);
+        contentValues.put(Contract.BoardgameEntry.COLUMN_NAME, "Test");
+        contentValues.put(Contract.BoardgameEntry.COLUMN_THUMBNAIL, "http://none");
+        contentValues.put(Contract.BoardgameEntry.COLUMN_YEAR_PUBLISHED, "2010");
+        contentValues.put(Contract.BoardgameEntry.COLUMN_RANK, 1);
+
+        Uri resultUri = getContentResolver().insert(bgUri, contentValues);
+
+        Log.d(TAG, "insertRows: " + resultUri);
     }
 
     private void initViews() {
@@ -138,9 +161,12 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        Uri boardgamesURI = Contract.BoardgameEntry.CONTENT_URI;
+
         return new CursorLoader(
                 this,
-                Uri.parse("content://none"),
+                boardgamesURI,
                 null,
                 null,
                 null,
@@ -150,7 +176,14 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data == null){
+
+        if (data.moveToFirst()) {
+
+            do {
+                Log.d(TAG, "logRows: " + data.getString(data.getColumnIndex(Contract.BoardgameEntry.COLUMN_NAME)));
+            } while (data.moveToNext());
+        }
+        else{
             Intent downloader = new Intent(this, HotListDownloader.class);
             startService(downloader);
         }
