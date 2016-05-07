@@ -172,4 +172,5 @@ public class BGGCContentProvider extends ContentProvider {
                 return super.bulkInsert(uri, values);
         }
     }
+
 }

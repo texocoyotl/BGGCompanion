@@ -10,6 +10,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,29 +21,24 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
 import com.texocoyotl.bggcompanion.database.Contract;
-import com.texocoyotl.bggcompanion.xmlpojo.APIServices;
-import com.texocoyotl.bggcompanion.xmlpojo.hotlist.HotListResult;
+import com.texocoyotl.bggcompanion.database.HotListItemData;
 
 import io.fabric.sdk.android.Fabric;
-import java.io.IOException;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
-
-public class HomeActivity extends AppCompatActivity
+public class HotListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor>,
+        HotListAdapter.OnListFragmentInteractionListener {
 
-    private static final String TAG = HomeActivity.class.getSimpleName() + "TAG_";
+    private static final String TAG = HotListActivity.class.getSimpleName() + "TAG_";
     private static final int HOT_LIST_LOADER = 0;
+    private static final int mColumnCount = 2;
+    private RecyclerView mRecyclerView;
+    private HotListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +50,7 @@ public class HomeActivity extends AppCompatActivity
         getSupportLoaderManager().initLoader(HOT_LIST_LOADER, null, this);
 
         //insertTestRow();
-//        Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
-//        getContentResolver().delete(bgUri, null, null);
+
 
         //TODO: EVALUATE IF FETCHING DETAIL DATA IN TWO STEPS OR ONE BIG STEP
 
@@ -86,6 +83,9 @@ public class HomeActivity extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
+                getContentResolver().delete(bgUri, null, null);
             }
         });
 
@@ -100,6 +100,13 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.list);
+
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, mColumnCount));
+
+        mAdapter = new HotListAdapter(this, null);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -167,7 +174,7 @@ public class HomeActivity extends AppCompatActivity
         return new CursorLoader(
                 this,
                 boardgamesURI,
-                null,
+                Contract.HotListQuery.COLUMNS,
                 null,
                 null,
                 null
@@ -176,11 +183,11 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
 
         if (data.moveToFirst()) {
-
             do {
-                Log.d(TAG, "logRows: " + data.getString(data.getColumnIndex(Contract.BoardgameEntry.COLUMN_NAME)));
+                Log.d(TAG, "logRows: " + data.getString(Contract.HotListQuery.COLNUM_NAME));
             } while (data.moveToNext());
         }
         else{
@@ -192,5 +199,10 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void onListFragmentInteraction(HotListItemData item) {
+        Log.d(TAG, "onListFragmentInteraction: " + item.getName());
     }
 }

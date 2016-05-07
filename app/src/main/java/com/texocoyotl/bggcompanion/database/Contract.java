@@ -47,4 +47,22 @@ public class Contract {
             return Integer.parseInt(uri.getPathSegments().get(1));
         }
     }
+
+    public static final class HotListQuery {
+        public static final String[] COLUMNS = {
+                BoardgameEntry._ID,
+                BoardgameEntry.COLUMN_BGG_ID,
+                BoardgameEntry.COLUMN_NAME,
+                BoardgameEntry.COLUMN_THUMBNAIL,
+                BoardgameEntry.COLUMN_YEAR_PUBLISHED,
+                BoardgameEntry.COLUMN_RANK
+        };
+
+        public static final int COLNUM_ID = 0;
+        public static final int COLNUM_BGG_ID = 1;
+        public static final int COLNUM_NAME = 2;
+        public static final int COLNUM_THUMBNAIL = 3;
+        public static final int COLNUM_YEAR_PUBLISHED = 4;
+        public static final int COLNUM_RANK = 5;
+    }
 }
