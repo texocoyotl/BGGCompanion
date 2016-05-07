@@ -26,8 +26,23 @@ import android.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.texocoyotl.bggcompanion.database.Contract;
 import com.texocoyotl.bggcompanion.database.HotListItemData;
+import com.texocoyotl.bggcompanion.xmlpojo.APIServices;
+import com.texocoyotl.bggcompanion.xmlpojo.hotlist.HotListResult;
+import com.texocoyotl.bggcompanion.xmlpojo.hotlist.Item;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.HttpException;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class HotListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -35,10 +50,11 @@ public class HotListActivity extends AppCompatActivity
         HotListAdapter.OnListFragmentInteractionListener {
 
     private static final String TAG = HotListActivity.class.getSimpleName() + "TAG_";
-    private static final int HOT_LIST_LOADER = 0;
+    public static final int HOT_LIST_LOADER = 0;
     private static final int mColumnCount = 2;
     private RecyclerView mRecyclerView;
     private HotListAdapter mAdapter;
+    private HotListSubscriber mHotListSubscriber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,21 +76,21 @@ public class HotListActivity extends AppCompatActivity
 
     }
 
-    private void insertTestRow() {
-        Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
-
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(Contract.BoardgameEntry.COLUMN_BGG_ID, 2);
-        contentValues.put(Contract.BoardgameEntry.COLUMN_NAME, "Test");
-        contentValues.put(Contract.BoardgameEntry.COLUMN_THUMBNAIL, "http://none");
-        contentValues.put(Contract.BoardgameEntry.COLUMN_YEAR_PUBLISHED, "2010");
-        contentValues.put(Contract.BoardgameEntry.COLUMN_RANK, 1);
-
-        Uri resultUri = getContentResolver().insert(bgUri, contentValues);
-
-        Log.d(TAG, "insertRows: " + resultUri);
-    }
+//    private void insertTestRow() {
+//        Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
+//
+//        ContentValues contentValues = new ContentValues();
+//
+//        contentValues.put(Contract.BoardgameEntry.COLUMN_BGG_ID, 2);
+//        contentValues.put(Contract.BoardgameEntry.COLUMN_NAME, "Test");
+//        contentValues.put(Contract.BoardgameEntry.COLUMN_THUMBNAIL, "http://none");
+//        contentValues.put(Contract.BoardgameEntry.COLUMN_YEAR_PUBLISHED, "2010");
+//        contentValues.put(Contract.BoardgameEntry.COLUMN_RANK, 1);
+//
+//        Uri resultUri = getContentResolver().insert(bgUri, contentValues);
+//
+//        Log.d(TAG, "insertRows: " + resultUri);
+//    }
 
     private void initViews() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -86,6 +102,7 @@ public class HotListActivity extends AppCompatActivity
 
                 Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
                 getContentResolver().delete(bgUri, null, null);
+                //mAdapter.notifyDataSetChanged();
             }
         });
 
@@ -107,6 +124,12 @@ public class HotListActivity extends AppCompatActivity
 
         mAdapter = new HotListAdapter(this, null);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mHotListSubscriber.unsubscribe();
+        super.onDestroy();
     }
 
     @Override
@@ -186,14 +209,32 @@ public class HotListActivity extends AppCompatActivity
         mAdapter.swapCursor(data);
 
         if (data.moveToFirst()) {
-            do {
-                Log.d(TAG, "logRows: " + data.getString(Contract.HotListQuery.COLNUM_NAME));
-            } while (data.moveToNext());
+            Log.d(TAG, "logRows: " + data.getCount());
         }
         else{
-            Intent downloader = new Intent(this, HotListDownloader.class);
-            startService(downloader);
+            downloadData();
         }
+    }
+
+    private void downloadData() {
+
+        String BASE_URL = "http://www.boardgamegeek.com/xmlapi2/";
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .addConverterFactory(SimpleXmlConverterFactory.create())
+                .build();
+
+        APIServices apiService = retrofit.create(APIServices.class);
+
+        Observable<HotListResult> mHotListAPIcall = apiService.getHotList("boardgame");
+        mHotListSubscriber = new HotListSubscriber(this);
+
+        mHotListAPIcall
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(mHotListSubscriber);
     }
 
     @Override
