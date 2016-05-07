@@ -41,7 +41,10 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class HotListActivity extends AppCompatActivity
@@ -54,7 +57,7 @@ public class HotListActivity extends AppCompatActivity
     private static final int mColumnCount = 2;
     private RecyclerView mRecyclerView;
     private HotListAdapter mAdapter;
-    private HotListSubscriber mHotListSubscriber;
+    private Subscription mHotListSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +131,7 @@ public class HotListActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        mHotListSubscriber.unsubscribe();
+        mHotListSubscription.unsubscribe();
         super.onDestroy();
     }
 
@@ -229,12 +232,46 @@ public class HotListActivity extends AppCompatActivity
         APIServices apiService = retrofit.create(APIServices.class);
 
         Observable<HotListResult> mHotListAPIcall = apiService.getHotList("boardgame");
-        mHotListSubscriber = new HotListSubscriber(this);
 
-        mHotListAPIcall
+        mHotListSubscription = mHotListAPIcall
                 .subscribeOn(Schedulers.newThread())
+                .map(new Func1<HotListResult, Integer>() {
+                    @Override
+                    public Integer call(HotListResult result) {
+                        List<ContentValues> values = new ArrayList<ContentValues>();
+
+                        List<Item> items = result.getItems();
+                        for(int i = 0; i < items.size() && i < 30; i++){
+                            Item item = items.get(i);
+                            ContentValues value = new ContentValues();
+                            value.put(Contract.BoardgameEntry.COLUMN_BGG_ID, item.getId());
+                            value.put(Contract.BoardgameEntry.COLUMN_NAME, item.getName().getValue());
+                            value.put(Contract.BoardgameEntry.COLUMN_THUMBNAIL, item.getThumbnail().getValue());
+                            value.put(Contract.BoardgameEntry.COLUMN_YEAR_PUBLISHED, item.getYearpublished().getValue());
+                            value.put(Contract.BoardgameEntry.COLUMN_RANK, item.getRank());
+
+                            values.add(value);
+                        }
+
+                        if ( values.size() > 0 ) {
+                            ContentValues[] cvArray = new ContentValues[values.size()];
+                            values.toArray(cvArray);
+                            getContentResolver().bulkInsert(Contract.BoardgameEntry.CONTENT_URI, cvArray);
+                        }
+
+                        Log.d(TAG, "Rows inserted " + values.size() + Thread.currentThread());
+
+                        return values.size();
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mHotListSubscriber);
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer result) {
+                        if (result > 0)
+                            getSupportLoaderManager().restartLoader(HotListActivity.HOT_LIST_LOADER, null, HotListActivity.this);
+                    }
+                });
     }
 
     @Override
