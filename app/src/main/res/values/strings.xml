@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">BGG Companion</string>
+    <string name="app_name_hotlist">BGG Companion: The Hotness</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -9,4 +10,5 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
     <string name="fabric_api_key">7e539b376b77ff64a6943bf0409b6839b1ec7c7b</string>
+    <string name="hotlist_row_thumbnail_description">Board Game Thumbnail</string>
 </resources>

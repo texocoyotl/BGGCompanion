@@ -52,10 +52,9 @@ public class HotListActivity extends AppCompatActivity
         LoaderManager.LoaderCallbacks<Cursor>,
         HotListAdapter.OnListFragmentInteractionListener {
 
-    private static final String TAG = HotListActivity.class.getSimpleName() + "TAG_";
     public static final int HOT_LIST_LOADER = 0;
+    private static final String TAG = HotListActivity.class.getSimpleName() + "TAG_";
     private static final int mColumnCount = 2;
-    private RecyclerView mRecyclerView;
     private HotListAdapter mAdapter;
     private Subscription mHotListSubscription;
 
@@ -73,7 +72,6 @@ public class HotListActivity extends AppCompatActivity
 
         //TODO: EVALUATE IF FETCHING DETAIL DATA IN TWO STEPS OR ONE BIG STEP
 
-        //TODO: ADD A RECYCLERVIEW WITH A CURSOR ADAPTER THAT GETS SWAPED WITH THE RESULT OF THE LOADER
         //TODO: ADD A DETAIL ACTIVITY THAT FOLLOWS THE SAME LOGIC OF LOCAL DATA / DOWNLOAD.
         //TODO: USE FIELD LAST_UPDATED AS FILTER WHEN SYNC-ING
 
@@ -121,7 +119,7 @@ public class HotListActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.list);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.list);
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, mColumnCount));
 
@@ -131,7 +129,8 @@ public class HotListActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        mHotListSubscription.unsubscribe();
+        if (mHotListSubscription != null)
+            mHotListSubscription.unsubscribe();
         super.onDestroy();
     }
 
@@ -213,8 +212,7 @@ public class HotListActivity extends AppCompatActivity
 
         if (data.moveToFirst()) {
             Log.d(TAG, "logRows: " + data.getCount());
-        }
-        else{
+        } else {
             downloadData();
         }
     }
@@ -241,7 +239,7 @@ public class HotListActivity extends AppCompatActivity
                         List<ContentValues> values = new ArrayList<ContentValues>();
 
                         List<Item> items = result.getItems();
-                        for(int i = 0; i < items.size() && i < 30; i++){
+                        for (int i = 0; i < items.size() && i < 30; i++) {
                             Item item = items.get(i);
                             ContentValues value = new ContentValues();
                             value.put(Contract.BoardgameEntry.COLUMN_BGG_ID, item.getId());
@@ -253,7 +251,7 @@ public class HotListActivity extends AppCompatActivity
                             values.add(value);
                         }
 
-                        if ( values.size() > 0 ) {
+                        if (values.size() > 0) {
                             ContentValues[] cvArray = new ContentValues[values.size()];
                             values.toArray(cvArray);
                             getContentResolver().bulkInsert(Contract.BoardgameEntry.CONTENT_URI, cvArray);
