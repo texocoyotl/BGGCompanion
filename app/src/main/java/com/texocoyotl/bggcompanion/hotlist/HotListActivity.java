@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
+import com.texocoyotl.bggcompanion.BuildConfig;
 import com.texocoyotl.bggcompanion.R;
 import com.texocoyotl.bggcompanion.database.Contract;
 import com.texocoyotl.bggcompanion.database.HotListItemData;
@@ -53,6 +54,7 @@ public class HotListActivity extends AppCompatActivity
     public static final int HOT_LIST_LOADER = 0;
     private static final String TAG = HotListActivity.class.getSimpleName() + "TAG_";
     private static final int mColumnCount = 2;
+    public static final String BUNDLE_KEY_DETAIL_URI = "DETAIL_URI";
     private HotListAdapter mAdapter;
     private Subscription mHotListSubscription;
 
@@ -73,22 +75,6 @@ public class HotListActivity extends AppCompatActivity
         //TODO: USE FIELD LAST_UPDATED AS FILTER WHEN SYNC-ING
 
     }
-
-//    private void insertTestRow() {
-//        Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
-//
-//        ContentValues contentValues = new ContentValues();
-//
-//        contentValues.put(Contract.BoardgameEntry.COLUMN_BGG_ID, 2);
-//        contentValues.put(Contract.BoardgameEntry.COLUMN_NAME, "Test");
-//        contentValues.put(Contract.BoardgameEntry.COLUMN_THUMBNAIL, "http://none");
-//        contentValues.put(Contract.BoardgameEntry.COLUMN_YEAR_PUBLISHED, "2010");
-//        contentValues.put(Contract.BoardgameEntry.COLUMN_RANK, 1);
-//
-//        Uri resultUri = getContentResolver().insert(bgUri, contentValues);
-//
-//        Log.d(TAG, "insertRows: " + resultUri);
-//    }
 
     private void initViews() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -216,10 +202,8 @@ public class HotListActivity extends AppCompatActivity
 
     private void downloadData() {
 
-        String BASE_URL = "http://www.boardgamegeek.com/xmlapi2/";
-
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(BuildConfig.API_URL_HOTLIST)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(SimpleXmlConverterFactory.create())
                 .build();
@@ -278,6 +262,7 @@ public class HotListActivity extends AppCompatActivity
     public void onListFragmentInteraction(HotListItemData item) {
         Log.d(TAG, "onListFragmentInteraction: " + item.getName());
         Intent i = new Intent(this, DetailActivity.class);
+        i.putExtra(BUNDLE_KEY_DETAIL_URI, Contract.BoardgameEntry.buildBoardGameUri(item.getBggId()));
         startActivity(i);
     }
 }

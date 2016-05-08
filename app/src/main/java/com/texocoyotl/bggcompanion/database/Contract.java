@@ -30,13 +30,39 @@ public class Contract {
         public static final String COLUMN_YEAR_PUBLISHED = "year_published";
         public static final String COLUMN_RANK = "hot_rank";
 
+        public static final String COLUMN_IMAGE = "image";
+        public static final String COLUMN_DESCRIPTION = "description";
+        public static final String COLUMN_MIN_PLAYERS = "min_players";
+        public static final String COLUMN_MAX_PLAYERS = "max_players";
+        public static final String COLUMN_MIN_PLAY_TIME = "min_play_time";
+        public static final String COLUMN_MAX_PLAY_TIME = "max_play_time";
+        public static final String COLUMN_MIN_AGE = "min_age";
+
+        public static final String COLUMN_CATEGORIES = "categories";
+        public static final String COLUMN_MECHANICS = "mechanics";
+        public static final String COLUMN_FAMILIES = "families";
+        public static final String COLUMN_DESIGNER = "designer";
+        public static final String COLUMN_PUBLISHERS = "publishers";
+
         public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
                 _ID + " INTEGER PRIMARY KEY," +
                 COLUMN_BGG_ID + " INTEGER UNIQUE NOT NULL," +
                 COLUMN_NAME + " TEXT NOT NULL, " +
                 COLUMN_THUMBNAIL + " TEXT NOT NULL, " +
                 COLUMN_YEAR_PUBLISHED + " TEXT NOT NULL, " +
-                COLUMN_RANK + " INTEGER NOT NULL " +
+                COLUMN_RANK + " INTEGER NOT NULL, " +
+                COLUMN_IMAGE + " TEXT," +
+                COLUMN_DESCRIPTION + " TEXT," +
+                COLUMN_MIN_PLAYERS + " INTEGER ," +
+                COLUMN_MAX_PLAYERS + " INTEGER ," +
+                COLUMN_MIN_PLAY_TIME + " INTEGER ," +
+                COLUMN_MAX_PLAY_TIME + " INTEGER ," +
+                COLUMN_MIN_AGE + " INTEGER ," +
+                COLUMN_CATEGORIES + " TEXT ," +
+                COLUMN_MECHANICS + " TEXT ," +
+                COLUMN_FAMILIES + " TEXT ," +
+                COLUMN_DESIGNER + " TEXT ," +
+                COLUMN_PUBLISHERS + " TEXT " +
                 " );";
 
         public static Uri buildBoardGameUri(long id) {
@@ -64,5 +90,46 @@ public class Contract {
         public static final int COLNUM_THUMBNAIL = 3;
         public static final int COLNUM_YEAR_PUBLISHED = 4;
         public static final int COLNUM_RANK = 5;
+    }
+    
+    public static final class DetailQuery {
+        public static final String[] COLUMNS = {
+                BoardgameEntry._ID,
+                BoardgameEntry.COLUMN_BGG_ID,
+                BoardgameEntry.COLUMN_NAME,
+                BoardgameEntry.COLUMN_YEAR_PUBLISHED,
+                BoardgameEntry.COLUMN_RANK,
+                BoardgameEntry.COLUMN_IMAGE,
+                BoardgameEntry.COLUMN_DESCRIPTION,
+                BoardgameEntry.COLUMN_MIN_PLAYERS,
+                BoardgameEntry.COLUMN_MAX_PLAYERS,
+                BoardgameEntry.COLUMN_MIN_PLAY_TIME,
+                BoardgameEntry.COLUMN_MAX_PLAY_TIME,
+                BoardgameEntry.COLUMN_MIN_AGE,
+                BoardgameEntry.COLUMN_CATEGORIES,
+                BoardgameEntry.COLUMN_MECHANICS,
+                BoardgameEntry.COLUMN_FAMILIES,
+                BoardgameEntry.COLUMN_DESIGNER,
+                BoardgameEntry.COLUMN_PUBLISHERS
+        };
+
+        public static final int COLNUM_ID = 0;
+        public static final int COLNUM_BGG_ID = 1;
+        public static final int COLNUM_NAME = 2;
+        public static final int COLNUM_YEAR_PUBLISHED = 3;
+        public static final int COLNUM_RANK = 4;
+        public static final int COLNUM_IMAGE = 5;
+        public static final int COLNUM_DESCRIPTION = 6;
+        public static final int COLNUM_MIN_PLAYERS = 7;
+        public static final int COLNUM_MAX_PLAYERS = 8;
+        public static final int COLNUM_MIN_PLAY_TIME = 9;
+        public static final int COLNUM_MAX_PLAY_TIME = 10;
+        public static final int COLNUM_MIN_AGE = 11;
+        public static final int COLNUM_CATEGORIES = 12;
+        public static final int COLNUM_MECHANICS = 13;
+        public static final int COLNUM_FAMILIES = 14;
+        public static final int COLNUM_DESIGNER = 15;
+        public static final int COLNUM_PUBLISHERS = 16;
+
     }
 }
