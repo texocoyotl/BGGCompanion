@@ -1,4 +1,4 @@
-package com.texocoyotl.bggcompanion;
+package com.texocoyotl.bggcompanion.hotlist;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -11,7 +11,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -24,23 +23,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
+import com.texocoyotl.bggcompanion.R;
 import com.texocoyotl.bggcompanion.database.Contract;
 import com.texocoyotl.bggcompanion.database.HotListItemData;
+import com.texocoyotl.bggcompanion.detail.DetailActivity;
 import com.texocoyotl.bggcompanion.xmlpojo.APIServices;
 import com.texocoyotl.bggcompanion.xmlpojo.hotlist.HotListResult;
 import com.texocoyotl.bggcompanion.xmlpojo.hotlist.Item;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.HttpException;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -71,7 +69,6 @@ public class HotListActivity extends AppCompatActivity
 
 
         //TODO: EVALUATE IF FETCHING DETAIL DATA IN TWO STEPS OR ONE BIG STEP
-
         //TODO: ADD A DETAIL ACTIVITY THAT FOLLOWS THE SAME LOGIC OF LOCAL DATA / DOWNLOAD.
         //TODO: USE FIELD LAST_UPDATED AS FILTER WHEN SYNC-ING
 
@@ -280,5 +277,7 @@ public class HotListActivity extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(HotListItemData item) {
         Log.d(TAG, "onListFragmentInteraction: " + item.getName());
+        Intent i = new Intent(this, DetailActivity.class);
+        startActivity(i);
     }
 }

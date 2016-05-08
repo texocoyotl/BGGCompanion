@@ -1,4 +1,4 @@
-package com.texocoyotl.bggcompanion;
+package com.texocoyotl.bggcompanion.hotlist;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.texocoyotl.bggcompanion.CursorRecyclerViewAdapter;
+import com.texocoyotl.bggcompanion.R;
 import com.texocoyotl.bggcompanion.database.HotListItemData;
 
 

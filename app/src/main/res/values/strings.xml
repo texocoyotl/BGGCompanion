@@ -11,4 +11,5 @@
 
     <string name="fabric_api_key">7e539b376b77ff64a6943bf0409b6839b1ec7c7b</string>
     <string name="hotlist_row_thumbnail_description">Board Game Thumbnail</string>
+    <string name="title_activity_detail">DetailActivity</string>
 </resources>
