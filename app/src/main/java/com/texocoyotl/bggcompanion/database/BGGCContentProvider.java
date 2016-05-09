@@ -57,11 +57,11 @@ public class BGGCContentProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             // "boardgames/*#"
             case MATCH_BOARDGAMES_WITH_ID: {
-                int bggID = Contract.BoardgameEntry.getIDFromUri(uri);
+                String bggID = Contract.BoardgameEntry.getIDFromUri(uri);
 
                 selection = Contract.BoardgameEntry.TABLE_NAME +
                         "." + Contract.BoardgameEntry.COLUMN_BGG_ID + " = ? ";
-                selectionArgs = new String[]{String.valueOf(bggID)};
+                selectionArgs = new String[]{bggID};
 
                 return mDatabaseHelper.getReadableDatabase().query(
                         Contract.BoardgameEntry.TABLE_NAME,

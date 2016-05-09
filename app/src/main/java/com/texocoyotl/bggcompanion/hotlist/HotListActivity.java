@@ -196,14 +196,14 @@ public class HotListActivity extends AppCompatActivity
         if (data.moveToFirst()) {
             Log.d(TAG, "logRows: " + data.getCount());
         } else {
-            downloadData();
+            downloadHotListData();
         }
     }
 
-    private void downloadData() {
+    private void downloadHotListData() {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BuildConfig.API_URL_HOTLIST)
+                .baseUrl(BuildConfig.BASE_API_URL)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(SimpleXmlConverterFactory.create())
                 .build();

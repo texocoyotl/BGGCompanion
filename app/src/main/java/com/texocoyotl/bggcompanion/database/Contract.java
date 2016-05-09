@@ -69,8 +69,8 @@ public class Contract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static int getIDFromUri(Uri uri) {
-            return Integer.parseInt(uri.getPathSegments().get(1));
+        public static String getIDFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
         }
     }
 
