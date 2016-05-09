@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -49,14 +50,12 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private static final int DETAIL_LOADER = 1;
     private Uri mDetailUri;
     private Subscription mDetailSubscription;
-
-    //@BindView(R.id.detail_image)
-    //ImageView mImageView;
-
+    private Context mContext;
 
     @BindView(R.id.detail_expand_text_view_description)
     ExpandableTextView mDescriptionView;
-    private Context mContext;
+
+
 
     public DetailActivityFragment() {
     }
@@ -113,7 +112,11 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         if (item != null && item.getImage() != null && !item.getImage().equals("")) {
 
             mDescriptionView.setText(item.getDescription().replace("&#10;", "\n"));
-            ((OnFragmentCallback) mContext).loadHeader("http:" + item.getImage());
+
+            ((OnFragmentCallback) mContext).loadHeader(
+                    "http:" + item.getImage(),
+                    item.getName() + " (" + item.getYearPublished() + ")"
+            );
 
         }
         else{
@@ -176,6 +179,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     }
 
     public interface OnFragmentCallback{
-        public void loadHeader(String url);
+        public void loadHeader(String url, String title);
     }
 }
