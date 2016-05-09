@@ -56,7 +56,6 @@ public class HotListActivity extends AppCompatActivity
 
     public static final int HOT_LIST_LOADER = 0;
     private static final String TAG = HotListActivity.class.getSimpleName() + "TAG_";
-    private static final int mColumnCount = 2;
     public static final String BUNDLE_KEY_DETAIL_URI = "DETAIL_URI";
     private HotListAdapter mAdapter;
     private Subscription mHotListSubscription;
@@ -109,7 +108,8 @@ public class HotListActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, mColumnCount));
+        int columnCount = getResources().getInteger(R.integer.hotlist_column_count);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, columnCount));
 
         mAdapter = new HotListAdapter(this, null);
         mRecyclerView.setAdapter(mAdapter);

@@ -13,4 +13,5 @@
     <dimen name="detail_backdrop_height">400dp</dimen>
     <dimen name="card_margin">16dp</dimen>
     <dimen name="list_item_avatar_size">40dp</dimen>
+    <integer name="hotlist_column_count">1</integer>
 </resources>
