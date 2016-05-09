@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -35,6 +36,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -54,8 +56,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
     @BindView(R.id.detail_expand_text_view_description)
     ExpandableTextView mDescriptionView;
-
-
 
     public DetailActivityFragment() {
     }
@@ -145,6 +145,19 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
         mDetailSubscription = mDetailAPIcall
                 .subscribeOn(Schedulers.newThread())
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Snackbar.make(mDescriptionView, "You need Internet connection for the initial download", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("Retry", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        downloadDetailData();
+                                    }
+                                })
+                                .show();
+                    }
+                })
                 .map(new Func1<DetailResult, Integer>() {
                     @Override
                     public Integer call(DetailResult result) {
@@ -169,9 +182,19 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
+                .subscribe(new Subscriber<Integer>() {
                     @Override
-                    public void call(Integer result) {
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "onError: " + e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Integer result) {
                         if (result > 0)
                             getActivity().getSupportLoaderManager().restartLoader(DetailActivityFragment.DETAIL_LOADER, null, DetailActivityFragment.this);
                     }
