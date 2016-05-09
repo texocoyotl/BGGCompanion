@@ -14,7 +14,7 @@ import com.texocoyotl.bggcompanion.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements DetailActivityFragment.OnFragmentCallback{
 
     @BindView(R.id.detail_image)
     ImageView mImageView;
@@ -28,7 +28,7 @@ public class DetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Glide.with(this).load("http://cf.geekdo-images.com/images/pic2737530.png").into(mImageView);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -41,4 +41,8 @@ public class DetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    public void loadHeader(String url) {
+        Glide.with(this).load(url).into(mImageView);
+    }
 }

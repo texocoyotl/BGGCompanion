@@ -1,5 +1,6 @@
 package com.texocoyotl.bggcompanion.detail;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -55,8 +56,15 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
     @BindView(R.id.detail_expand_text_view_description)
     ExpandableTextView mDescriptionView;
+    private Context mContext;
 
     public DetailActivityFragment() {
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     @Override
@@ -64,8 +72,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         super.onCreate(savedInstanceState);
         mDetailUri = getActivity().getIntent().getParcelableExtra(HotListActivity.BUNDLE_KEY_DETAIL_URI);
         Log.d(TAG, "onCreate: " + mDetailUri.toString());
-
-
     }
 
     @Override
@@ -107,6 +113,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         if (item != null && item.getImage() != null && !item.getImage().equals("")) {
 
             mDescriptionView.setText(item.getDescription().replace("&#10;", "\n"));
+            ((OnFragmentCallback) mContext).loadHeader("http:" + item.getImage());
 
         }
         else{
@@ -166,5 +173,9 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                             getActivity().getSupportLoaderManager().restartLoader(DetailActivityFragment.DETAIL_LOADER, null, DetailActivityFragment.this);
                     }
                 });
+    }
+
+    public interface OnFragmentCallback{
+        public void loadHeader(String url);
     }
 }
