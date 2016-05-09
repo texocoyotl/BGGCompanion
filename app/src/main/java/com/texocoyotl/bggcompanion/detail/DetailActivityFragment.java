@@ -13,9 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.texocoyotl.bggcompanion.BuildConfig;
 import com.texocoyotl.bggcompanion.R;
 import com.texocoyotl.bggcompanion.database.Contract;
@@ -47,13 +47,14 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private static final String TAG = "DetailTAG_";
     private static final int DETAIL_LOADER = 1;
     private Uri mDetailUri;
-
-    @BindView(R.id.detail_description)
-    TextView mDetailView;
+    private Subscription mDetailSubscription;
 
     @BindView(R.id.detail_image)
     ImageView mImageView;
-    private Subscription mDetailSubscription;
+
+
+    @BindView(R.id.detail_expand_text_view_description)
+    ExpandableTextView mDescriptionView;
 
     public DetailActivityFragment() {
     }
@@ -105,7 +106,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         DetailItemData item = DetailItemData.fromCursor(data);
         if (item != null && item.getImage() != null && !item.getImage().equals("")) {
 
-            mDetailView.setText(item.getDescription());
+            mDescriptionView.setText(item.getDescription());
             Glide.with(this).load("http:" + item.getThumbnail()).into(mImageView);
 
         }
