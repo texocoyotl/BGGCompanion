@@ -106,7 +106,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         DetailItemData item = DetailItemData.fromCursor(data);
         if (item != null && item.getImage() != null && !item.getImage().equals("")) {
 
-            mDescriptionView.setText(item.getDescription());
+            mDescriptionView.setText(item.getDescription().replace("&#10;", "\n"));
             Glide.with(this).load("http:" + item.getThumbnail()).into(mImageView);
 
         }
