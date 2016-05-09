@@ -123,7 +123,10 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                     "http:" + item.getImage(),
                     item.getName() + " (" + item.getYearPublished() + ")"
             );
-            mDescriptionView.setText(item.getDescription().replace("&#10;", "\n"));
+            mDescriptionView.setText(item.getDescription()
+                    .replace("&#10;", "\n")
+                    .replace("&quot;", "\"")
+            );
             mPlayersView.setText(getString(R.string.detail_players_content, item.getMinPlayers(), item.getMaxPlayers()));
             mPlayTimeView.setText(getString(R.string.detail_play_time_content, item.getMinPlayTime(), item.getMaxPlayTime()));
             mMinAgeView.setText(getString(R.string.detail_min_age_content, item.getMinAge()));

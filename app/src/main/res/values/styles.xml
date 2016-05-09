@@ -18,10 +18,11 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="gridGeneral" parent="">
-        <item name="android:layout_marginLeft">@dimen/text_small_margin</item>
-        <item name="android:layout_marginRight">@dimen/text_small_margin</item>
-        <item name="android:layout_marginTop">@dimen/text_margin</item>
-        <item name="android:layout_marginBottom">@dimen/text_margin</item>
+        <!--<item name="android:layout_marginLeft">@dimen/text_small_margin</item>-->
+        <!--<item name="android:layout_marginRight">@dimen/text_small_margin</item>-->
+        <!--<item name="android:layout_marginTop">@dimen/text_margin</item>-->
+        <!--<item name="android:layout_marginBottom">@dimen/text_margin</item>-->
+        <item name="android:layout_margin">@dimen/text_margin</item>
     </style>
 
     <style name="gridLabel" parent="gridGeneral">
