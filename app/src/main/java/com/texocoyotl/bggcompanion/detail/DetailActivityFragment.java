@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,10 +124,10 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                     "http:" + item.getImage(),
                     item.getName() + " (" + item.getYearPublished() + ")"
             );
-            mDescriptionView.setText(item.getDescription()
-                    .replace("&#10;", "\n")
-                    .replace("&quot;", "\"")
-            );
+            mDescriptionView.setText(Html.fromHtml(item.getDescription()
+                    .replace("&#10;", "<br/>")
+            ).toString());
+
             mPlayersView.setText(getString(R.string.detail_players_content, item.getMinPlayers(), item.getMaxPlayers()));
             mPlayTimeView.setText(getString(R.string.detail_play_time_content, item.getMinPlayTime(), item.getMaxPlayTime()));
             mMinAgeView.setText(getString(R.string.detail_min_age_content, item.getMinAge()));
