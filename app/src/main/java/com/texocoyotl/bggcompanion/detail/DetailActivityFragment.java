@@ -49,8 +49,8 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private Uri mDetailUri;
     private Subscription mDetailSubscription;
 
-    @BindView(R.id.detail_image)
-    ImageView mImageView;
+    //@BindView(R.id.detail_image)
+    //ImageView mImageView;
 
 
     @BindView(R.id.detail_expand_text_view_description)
@@ -107,7 +107,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         if (item != null && item.getImage() != null && !item.getImage().equals("")) {
 
             mDescriptionView.setText(item.getDescription().replace("&#10;", "\n"));
-            Glide.with(this).load("http:" + item.getThumbnail()).into(mImageView);
 
         }
         else{
