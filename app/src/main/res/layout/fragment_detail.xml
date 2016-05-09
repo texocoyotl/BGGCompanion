@@ -41,25 +41,28 @@
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/detail_card_view_basic"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
                 card_view:cardCornerRadius="4dp">
 
                 <GridLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:columnCount="2">
 
                     <TextView
-                        android:text="Players"/>
-                    <TextView android:text="0-0"/>
+                        android:text="@string/detail_players_label"/>
+                    <TextView android:id="@+id/detail_players" />
 
-                    <TextView android:text="Play Time"/>
-                    <TextView android:text="40-120 min"/>
+                    <TextView android:text="@string/detail_play_time_label"/>
+                    <TextView android:id="@+id/detail_play_time" />
 
+                    <TextView android:text="@string/detail_age_label"/>
+                    <TextView android:id="@+id/detail_min_age" />
 
                 </GridLayout>
+
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
@@ -67,10 +70,35 @@
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/detail_card_view_additional"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
                 card_view:cardCornerRadius="4dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:columnCount="2">
+
+                    <TextView
+                        android:text="@string/detail_categories_label"/>
+                    <TextView android:id="@+id/detail_categories"/>
+
+                    <TextView android:text="@string/detail_mechanics_label"/>
+                    <TextView android:id="@+id/detail_mechanics"/>
+
+                    <TextView android:text="@string/detail_families_label"/>
+                    <TextView android:id="@+id/detail_families"/>
+
+                    <TextView
+                        android:text="@string/detail_designers_label"/>
+                    <TextView android:id="@+id/detail_designers"/>
+
+                    <TextView android:text="@string/detail_publishers_label"/>
+                    <TextView android:id="@+id/detail_publishers"/>
+
+                </GridLayout>
+
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
@@ -91,7 +119,7 @@
                 android:id="@+id/detail_expand_text_view_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                expandableTextView:maxCollapsedLines="4">
+                expandableTextView:maxCollapsedLines="8">
 
                 <TextView
                     android:id="@+id/expandable_text"

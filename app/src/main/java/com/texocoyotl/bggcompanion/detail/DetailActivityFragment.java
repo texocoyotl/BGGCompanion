@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
@@ -54,8 +55,15 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private Subscription mDetailSubscription;
     private Context mContext;
 
-    @BindView(R.id.detail_expand_text_view_description)
-    ExpandableTextView mDescriptionView;
+    @BindView(R.id.detail_expand_text_view_description) ExpandableTextView mDescriptionView;
+    @BindView(R.id.detail_players) TextView mPlayersView;
+    @BindView(R.id.detail_play_time) TextView mPlayTimeView;
+    @BindView(R.id.detail_min_age) TextView mMinAgeView;
+    @BindView(R.id.detail_categories) TextView mCategoriesView;
+    @BindView(R.id.detail_mechanics) TextView mMechanicsView;
+    @BindView(R.id.detail_families) TextView mFamiliesView;
+    @BindView(R.id.detail_designers) TextView mDesignersView;
+    @BindView(R.id.detail_publishers) TextView mPublishersView;
 
     public DetailActivityFragment() {
     }
@@ -111,12 +119,20 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         DetailItemData item = DetailItemData.fromCursor(data);
         if (item != null && item.getImage() != null && !item.getImage().equals("")) {
 
-            mDescriptionView.setText(item.getDescription().replace("&#10;", "\n"));
-
             ((OnFragmentCallback) mContext).loadHeader(
                     "http:" + item.getImage(),
                     item.getName() + " (" + item.getYearPublished() + ")"
             );
+            mDescriptionView.setText(item.getDescription().replace("&#10;", "\n"));
+            mPlayersView.setText(getString(R.string.detail_players_content, item.getMinPlayers(), item.getMaxPlayers()));
+            mPlayTimeView.setText(getString(R.string.detail_play_time_content, item.getMinPlayTime(), item.getMaxPlayTime()));
+            mMinAgeView.setText(getString(R.string.detail_min_age_content, item.getMinAge()));
+
+            mCategoriesView.setText(item.getCategories());
+            mMechanicsView.setText(item.getMechanics());
+            mFamiliesView.setText(item.getFamilies());
+            mDesignersView.setText(item.getDesigner());
+            mPublishersView.setText(item.getPublishers());
 
         }
         else{

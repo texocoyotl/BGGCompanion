@@ -70,6 +70,7 @@ public class HotListActivity extends AppCompatActivity
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        setTitle(R.string.app_name_hotlist);
         initViews();
 
         getSupportLoaderManager().initLoader(HOT_LIST_LOADER, null, this);

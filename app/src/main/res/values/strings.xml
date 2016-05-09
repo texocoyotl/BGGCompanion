@@ -8,5 +8,17 @@
 
     <string name="hotlist_row_thumbnail_description">Board Game Thumbnail</string>
     <string name="expand_buton_description">expand buton</string>
+    <string name="detail_players_label">Players</string>
+    <string name="detail_play_time_label">Play Time</string>
+    <string name="detail_age_label">Age</string>
+    <string name="detail_mechanics_label">Mechanics</string>
+    <string name="detail_categories_label">Categories</string>
+    <string name="detail_families_label">Families</string>
+    <string name="detail_designers_label">Designers</string>
+    <string name="detail_publishers_label">Publishers</string>
+
+    <string name="detail_players_content">%1$d to %2$d</string>
+    <string name="detail_play_time_content">%1$d to %2$d min</string>
+    <string name="detail_min_age_content">%1$d and up</string>
 
 </resources>
