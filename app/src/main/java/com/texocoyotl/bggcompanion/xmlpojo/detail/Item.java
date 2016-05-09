@@ -1,6 +1,5 @@
 package com.texocoyotl.bggcompanion.xmlpojo.detail;
 
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;

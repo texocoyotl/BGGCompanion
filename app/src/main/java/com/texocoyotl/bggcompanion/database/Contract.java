@@ -41,7 +41,7 @@ public class Contract {
         public static final String COLUMN_CATEGORIES = "categories";
         public static final String COLUMN_MECHANICS = "mechanics";
         public static final String COLUMN_FAMILIES = "families";
-        public static final String COLUMN_DESIGNER = "designer";
+        public static final String COLUMN_DESIGNERS = "designers";
         public static final String COLUMN_PUBLISHERS = "publishers";
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
@@ -61,7 +61,7 @@ public class Contract {
                 COLUMN_CATEGORIES + " TEXT ," +
                 COLUMN_MECHANICS + " TEXT ," +
                 COLUMN_FAMILIES + " TEXT ," +
-                COLUMN_DESIGNER + " TEXT ," +
+                COLUMN_DESIGNERS + " TEXT ," +
                 COLUMN_PUBLISHERS + " TEXT " +
                 " );";
 
@@ -109,8 +109,10 @@ public class Contract {
                 BoardgameEntry.COLUMN_CATEGORIES,
                 BoardgameEntry.COLUMN_MECHANICS,
                 BoardgameEntry.COLUMN_FAMILIES,
-                BoardgameEntry.COLUMN_DESIGNER,
-                BoardgameEntry.COLUMN_PUBLISHERS
+                BoardgameEntry.COLUMN_DESIGNERS,
+                BoardgameEntry.COLUMN_PUBLISHERS,
+                BoardgameEntry.COLUMN_THUMBNAIL
+
         };
 
         public static final int COLNUM_ID = 0;
@@ -128,8 +130,17 @@ public class Contract {
         public static final int COLNUM_CATEGORIES = 12;
         public static final int COLNUM_MECHANICS = 13;
         public static final int COLNUM_FAMILIES = 14;
-        public static final int COLNUM_DESIGNER = 15;
+        public static final int COLNUM_DESIGNERS = 15;
         public static final int COLNUM_PUBLISHERS = 16;
+        public static final int COLNUM_THUMBNAIL = 17;
 
     }
+
+    public static final class UpdateDetailQuery{
+
+        public static final String SELECTION = BoardgameEntry.COLUMN_BGG_ID + " = ? ";
+
+    }
+
+
 }

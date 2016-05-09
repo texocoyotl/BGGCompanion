@@ -1,6 +1,5 @@
 package com.texocoyotl.bggcompanion.detail;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -26,7 +25,6 @@ import com.texocoyotl.bggcompanion.xmlpojo.APIServices;
 import com.texocoyotl.bggcompanion.xmlpojo.detail.DetailResult;
 import com.texocoyotl.bggcompanion.xmlpojo.detail.Item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -108,7 +106,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         if (item != null && item.getImage() != null && !item.getImage().equals("")) {
 
             mDetailView.setText(item.getDescription());
-            Glide.with(this).load("http:" + item.getImage()).into(mImageView);
+            Glide.with(this).load("http:" + item.getThumbnail()).into(mImageView);
 
         }
         else{
@@ -131,40 +129,33 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
         APIServices apiService = retrofit.create(APIServices.class);
 
-        Observable<DetailResult> mDetailAPIcall = apiService.getDetail(Contract.BoardgameEntry.getIDFromUri(mDetailUri));
+        final String bggId = Contract.BoardgameEntry.getIDFromUri(mDetailUri);
+
+        Observable<DetailResult> mDetailAPIcall = apiService.getDetail(bggId);
 
         mDetailSubscription = mDetailAPIcall
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<DetailResult, Integer>() {
                     @Override
                     public Integer call(DetailResult result) {
-                        List<ContentValues> values = new ArrayList<ContentValues>();
 
                         List<Item> items = result.getItems();
 
                         //We only expect 1 row of items
                         Item item = items.get(0);
 
-                        Log.d(TAG, "call: " + item);
-                        ContentValues value = new ContentValues();
-//                        value.put(Contract.BoardgameEntry.COLUMN_BGG_ID, item.getId());
-//                        value.put(Contract.BoardgameEntry.COLUMN_NAME, item.getName().getValue());
-//                        value.put(Contract.BoardgameEntry.COLUMN_THUMBNAIL, item.getThumbnail().getValue());
-//                        value.put(Contract.BoardgameEntry.COLUMN_YEAR_PUBLISHED, item.getYearpublished().getValue());
-//                        value.put(Contract.BoardgameEntry.COLUMN_RANK, item.getRank());
-//
-//                        values.add(value);
-//
-//
-//                        if (values.size() > 0) {
-//                            ContentValues[] cvArray = new ContentValues[values.size()];
-//                            values.toArray(cvArray);
-//                            getActivity().getContentResolver().bulkInsert(Contract.BoardgameEntry.CONTENT_URI, cvArray);
-//                        }
-//
-//                        Log.d(TAG, "Rows inserted " + values.size() + Thread.currentThread());
+                        if (BuildConfig.DEBUG) Log.d(TAG, "call: " + item);
 
-                        return values.size();
+                        int count = getActivity().getContentResolver().update(
+                                Contract.BoardgameEntry.CONTENT_URI,
+                                DetailItemData.getContentValue(item),
+                                Contract.UpdateDetailQuery.SELECTION,
+                                new String[]{bggId}
+                        );
+
+                        if (BuildConfig.DEBUG) Log.d(TAG, "Rows updated " + count + " " + Thread.currentThread());
+
+                        return count;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

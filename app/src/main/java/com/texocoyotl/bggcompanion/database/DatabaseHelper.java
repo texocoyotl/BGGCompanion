@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper  extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     static final String DATABASE_NAME = "bggc.db";
 

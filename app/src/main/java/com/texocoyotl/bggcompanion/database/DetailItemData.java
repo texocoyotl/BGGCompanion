@@ -1,6 +1,10 @@
 package com.texocoyotl.bggcompanion.database;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+
+import com.texocoyotl.bggcompanion.xmlpojo.detail.Item;
+import com.texocoyotl.bggcompanion.xmlpojo.detail.Link;
 
 
 public class DetailItemData {
@@ -9,6 +13,7 @@ public class DetailItemData {
     private final String yearPublished;
     private final int rank;
     private final String image;
+    private final String thumbnail;
     private final String description;
     private final int minPlayers;
     private final int maxPlayers;
@@ -21,12 +26,13 @@ public class DetailItemData {
     private final String designer;
     private final String publishers;
 
-    public DetailItemData(int bggId, String name, String yearPublished, int rank, String image, String description, int minPlayers, int maxPlayers, int minPlayTime, int maxPlayTime, int minAge, String categories, String mechanics, String families, String designer, String publishers) {
+    public DetailItemData(int bggId, String name, String yearPublished, int rank, String image, String thumbnail, String description, int minPlayers, int maxPlayers, int minPlayTime, int maxPlayTime, int minAge, String categories, String mechanics, String families, String designer, String publishers) {
         this.bggId = bggId;
         this.name = name;
         this.yearPublished = yearPublished;
         this.rank = rank;
         this.image = image;
+        this.thumbnail = thumbnail;
         this.description = description;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
@@ -104,6 +110,10 @@ public class DetailItemData {
         return publishers;
     }
 
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
     public static DetailItemData fromCursor(Cursor cursor){
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -113,6 +123,7 @@ public class DetailItemData {
                     cursor.getString(Contract.DetailQuery.COLNUM_YEAR_PUBLISHED),
                     cursor.getInt(Contract.DetailQuery.COLNUM_RANK),
                     cursor.getString(Contract.DetailQuery.COLNUM_IMAGE),
+                    cursor.getString(Contract.DetailQuery.COLNUM_THUMBNAIL),
                     cursor.getString(Contract.DetailQuery.COLNUM_DESCRIPTION),
                     cursor.getInt(Contract.DetailQuery.COLNUM_MIN_PLAYERS),
                     cursor.getInt(Contract.DetailQuery.COLNUM_MAX_PLAYERS),
@@ -122,10 +133,44 @@ public class DetailItemData {
                     cursor.getString(Contract.DetailQuery.COLNUM_CATEGORIES),
                     cursor.getString(Contract.DetailQuery.COLNUM_MECHANICS),
                     cursor.getString(Contract.DetailQuery.COLNUM_FAMILIES),
-                    cursor.getString(Contract.DetailQuery.COLNUM_DESIGNER),
+                    cursor.getString(Contract.DetailQuery.COLNUM_DESIGNERS),
                     cursor.getString(Contract.DetailQuery.COLNUM_PUBLISHERS)
             );
         }
         return null;
+    }
+
+    public static ContentValues getContentValue(Item item) {
+        ContentValues value = new ContentValues();
+
+        value.put(Contract.BoardgameEntry.COLUMN_IMAGE, item.getImage());
+        value.put(Contract.BoardgameEntry.COLUMN_DESCRIPTION, item.getDescription());
+        value.put(Contract.BoardgameEntry.COLUMN_MIN_PLAYERS, item.getMinplayers().getValue());
+        value.put(Contract.BoardgameEntry.COLUMN_MAX_PLAYERS, item.getMaxplayers().getValue());
+        value.put(Contract.BoardgameEntry.COLUMN_MIN_PLAY_TIME, item.getMinplaytime().getValue());
+        value.put(Contract.BoardgameEntry.COLUMN_MAX_PLAY_TIME, item.getMaxplaytime().getValue());
+        value.put(Contract.BoardgameEntry.COLUMN_MIN_AGE, item.getMinage().getValue());
+
+        String categories = "";
+        String mechanics = "";
+        String families = "";
+        String designers = "";
+        String publishers = "";
+
+        for (Link link : item.getLinks()){
+            if (link.getType().equals(Link.CATEGORY)) categories += link.getValue() + "\n";
+            else if (link.getType().equals(Link.MECHANIC)) mechanics += link.getValue() + "\n";
+            else if (link.getType().equals(Link.FAMILY)) families += link.getValue() + "\n";
+            else if (link.getType().equals(Link.DESIGNERS)) designers += link.getValue() + "\n";
+            else if (link.getType().equals(Link.PUBLISHER)) publishers += link.getValue() + "\n";
+        }
+
+        value.put(Contract.BoardgameEntry.COLUMN_CATEGORIES, categories.trim());
+        value.put(Contract.BoardgameEntry.COLUMN_MECHANICS, mechanics.trim());
+        value.put(Contract.BoardgameEntry.COLUMN_FAMILIES, families.trim());
+        value.put(Contract.BoardgameEntry.COLUMN_DESIGNERS, designers.trim());
+        value.put(Contract.BoardgameEntry.COLUMN_PUBLISHERS, publishers.trim());
+
+        return value;
     }
 }

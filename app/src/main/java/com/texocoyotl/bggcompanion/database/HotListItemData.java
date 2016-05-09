@@ -1,6 +1,9 @@
 package com.texocoyotl.bggcompanion.database;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+
+import com.texocoyotl.bggcompanion.xmlpojo.hotlist.Item;
 
 /**
  * Created by admin on 5/7/2016.
@@ -53,5 +56,17 @@ public class HotListItemData {
             );
         }
         return null;
+    }
+
+    public static ContentValues getContentValue(Item item) {
+        ContentValues value = new ContentValues();
+
+        value.put(Contract.BoardgameEntry.COLUMN_BGG_ID, item.getId());
+        value.put(Contract.BoardgameEntry.COLUMN_NAME, item.getName().getValue());
+        value.put(Contract.BoardgameEntry.COLUMN_THUMBNAIL, item.getThumbnail().getValue());
+        value.put(Contract.BoardgameEntry.COLUMN_YEAR_PUBLISHED, item.getYearpublished().getValue());
+        value.put(Contract.BoardgameEntry.COLUMN_RANK, item.getRank());
+
+        return value;
     }
 }

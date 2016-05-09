@@ -222,14 +222,7 @@ public class HotListActivity extends AppCompatActivity
                         List<Item> items = result.getItems();
                         for (int i = 0; i < items.size() && i < 30; i++) {
                             Item item = items.get(i);
-                            ContentValues value = new ContentValues();
-                            value.put(Contract.BoardgameEntry.COLUMN_BGG_ID, item.getId());
-                            value.put(Contract.BoardgameEntry.COLUMN_NAME, item.getName().getValue());
-                            value.put(Contract.BoardgameEntry.COLUMN_THUMBNAIL, item.getThumbnail().getValue());
-                            value.put(Contract.BoardgameEntry.COLUMN_YEAR_PUBLISHED, item.getYearpublished().getValue());
-                            value.put(Contract.BoardgameEntry.COLUMN_RANK, item.getRank());
-
-                            values.add(value);
+                            values.add(HotListItemData.getContentValue(item));
                         }
 
                         if (values.size() > 0) {
@@ -238,7 +231,7 @@ public class HotListActivity extends AppCompatActivity
                             getContentResolver().bulkInsert(Contract.BoardgameEntry.CONTENT_URI, cvArray);
                         }
 
-                        Log.d(TAG, "Rows inserted " + values.size() + Thread.currentThread());
+                        Log.d(TAG, "Rows inserted " + values.size() + " " + Thread.currentThread());
 
                         return values.size();
                     }

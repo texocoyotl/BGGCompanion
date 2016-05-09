@@ -143,8 +143,26 @@ public class BGGCContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-        // TODO: Implement this to handle requests to update one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+
+        final SQLiteDatabase sqLiteDatabase = mDatabaseHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        int count = 0;
+        Uri returnUri;
+        if ( null == selection ) selection = "1";
+        switch (match) {
+            case MATCH_BOARDGAMES:
+                count = sqLiteDatabase.update(
+                        Contract.BoardgameEntry.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if (count > 0) getContext().getContentResolver().notifyChange(uri, null);
+        return count;
     }
 
     @Override
