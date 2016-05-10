@@ -33,6 +33,7 @@
     <string name="developed_by">Developed By:</string>
     <string name="author" translatable="false">Benjamin Molina Alfonzo</string>
     <string name="version_label">v. %1$s</string>
+    <string name="about_libraries_title">Libraries Used</string>
 
 
 </resources>
