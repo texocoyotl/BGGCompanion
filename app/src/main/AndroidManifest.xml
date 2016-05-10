@@ -49,6 +49,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.texocoyotl.bggcompanion.hotlist.HotListActivity" />
         </activity>
+        <activity
+            android:name=".search.SearchActivity"
+            android:label="@string/title_activity_search"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.texocoyotl.bggcompanion.hotlist.HotListActivity" />
+        </activity>
     </application>
 
 </manifest>

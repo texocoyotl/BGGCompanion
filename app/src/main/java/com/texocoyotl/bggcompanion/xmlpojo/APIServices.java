@@ -13,6 +13,9 @@ public interface APIServices {
     Observable<HotListResult> getHotList(@Query("type") String type);
 
     @GET("thing")
-    Observable<DetailResult> getDetail(@Query("id") String type);
+    Observable<DetailResult> getDetail(@Query("id") String id);
+
+    @GET("search")
+    Observable<DetailResult> getDetail(@Query("type") String type, @Query("query") String query);
 
 }

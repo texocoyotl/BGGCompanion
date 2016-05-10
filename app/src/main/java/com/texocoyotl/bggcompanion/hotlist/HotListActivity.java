@@ -29,6 +29,7 @@ import com.texocoyotl.bggcompanion.about.AboutActivity;
 import com.texocoyotl.bggcompanion.database.Contract;
 import com.texocoyotl.bggcompanion.database.HotListItemData;
 import com.texocoyotl.bggcompanion.detail.DetailActivity;
+import com.texocoyotl.bggcompanion.search.SearchActivity;
 import com.texocoyotl.bggcompanion.xmlpojo.APIServices;
 import com.texocoyotl.bggcompanion.xmlpojo.hotlist.HotListResult;
 import com.texocoyotl.bggcompanion.xmlpojo.hotlist.Item;
@@ -146,10 +147,10 @@ public class HotListActivity extends AppCompatActivity
 
         if (id == R.id.nav_about) {
             startActivity(new Intent(this, AboutActivity.class));
+        } else if (id == R.id.nav_search){
+            startActivity(new Intent(this, SearchActivity.class));
         }
 
-//        } else if (id == R.id.nav_gallery) {
-//
 //        } else if (id == R.id.nav_slideshow) {
 //
 //        } else if (id == R.id.nav_manage) {

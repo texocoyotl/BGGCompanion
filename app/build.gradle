@@ -31,14 +31,8 @@ android {
         buildConfigField "String", "BASE_API_URL", '"http://www.boardgamegeek.com/xmlapi2/"'
     }
     buildTypes {
-        all{
-
-        }
-        debug {
-
-        }
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
