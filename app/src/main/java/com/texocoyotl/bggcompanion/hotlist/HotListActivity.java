@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.texocoyotl.bggcompanion.BuildConfig;
 import com.texocoyotl.bggcompanion.R;
+import com.texocoyotl.bggcompanion.about.AboutActivity;
 import com.texocoyotl.bggcompanion.database.Contract;
 import com.texocoyotl.bggcompanion.database.HotListItemData;
 import com.texocoyotl.bggcompanion.detail.DetailActivity;
@@ -136,20 +137,6 @@ public class HotListActivity extends AppCompatActivity
 //        return true;
 //    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -157,8 +144,10 @@ public class HotListActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
+        if (id == R.id.nav_about) {
+            startActivity(new Intent(this, AboutActivity.class));
+        }
+
 //        } else if (id == R.id.nav_gallery) {
 //
 //        } else if (id == R.id.nav_slideshow) {

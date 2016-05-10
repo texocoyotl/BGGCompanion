@@ -27,7 +27,8 @@
 
     <style name="gridLabel" parent="gridGeneral">
         <item name="android:textStyle">bold</item>
-1   </style>
+        1
+    </style>
 
     <style name="gridContent" parent="gridGeneral">
 
