@@ -74,27 +74,24 @@ public class HotListActivity extends AppCompatActivity
 
         getSupportLoaderManager().initLoader(HOT_LIST_LOADER, null, this);
 
-        //insertTestRow();
-
-
         //TODO: EVALUATE IF FETCHING DETAIL DATA IN TWO STEPS OR ONE BIG STEP
         //TODO: USE FIELD LAST_UPDATED AS FILTER WHEN SYNC-ING
 
     }
 
     private void initViews() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
-                Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
-                getContentResolver().delete(bgUri, null, null);
-                //mAdapter.notifyDataSetChanged();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//
+//                Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
+//                getContentResolver().delete(bgUri, null, null);
+//                //mAdapter.notifyDataSetChanged();
+//            }
+//        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

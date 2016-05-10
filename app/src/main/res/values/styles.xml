@@ -33,4 +33,8 @@
 
     </style>
 
+    <style name="detailImage" parent="">
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
 </resources>

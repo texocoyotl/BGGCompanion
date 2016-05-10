@@ -6,4 +6,6 @@
         <attr name="collapsedHeight" format="dimension"/>
         <attr name="animationDuration" format="integer"/>
     </declare-styleable>
+
+
 </resources>
