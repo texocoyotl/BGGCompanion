@@ -2,6 +2,7 @@ package com.texocoyotl.bggcompanion.xmlpojo;
 
 import com.texocoyotl.bggcompanion.xmlpojo.detail.DetailResult;
 import com.texocoyotl.bggcompanion.xmlpojo.hotlist.HotListResult;
+import com.texocoyotl.bggcompanion.xmlpojo.search.SearchResult;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -16,6 +17,6 @@ public interface APIServices {
     Observable<DetailResult> getDetail(@Query("id") String id);
 
     @GET("search")
-    Observable<DetailResult> getDetail(@Query("type") String type, @Query("query") String query);
+    Observable<SearchResult> getSearch(@Query("type") String type, @Query("query") String query);
 
 }

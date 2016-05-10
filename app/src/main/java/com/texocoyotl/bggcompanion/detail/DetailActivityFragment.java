@@ -78,7 +78,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDetailUri = getActivity().getIntent().getParcelableExtra(HotListActivity.BUNDLE_KEY_DETAIL_URI);
+        mDetailUri = getActivity().getIntent().getParcelableExtra(DetailActivity.BUNDLE_KEY_DETAIL_URI);
         Log.d(TAG, "onCreate: " + mDetailUri.toString());
     }
 

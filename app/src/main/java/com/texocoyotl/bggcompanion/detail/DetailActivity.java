@@ -21,6 +21,8 @@ import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity implements DetailActivityFragment.OnFragmentCallback{
 
+    public static final String BUNDLE_KEY_DETAIL_URI = "DETAIL_URI";
+
     @BindView(R.id.detail_image)
     ImageView mImageView;
 
@@ -40,7 +42,7 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
-        Uri mDetailUri = getIntent().getParcelableExtra(HotListActivity.BUNDLE_KEY_DETAIL_URI);
+        Uri mDetailUri = getIntent().getParcelableExtra(BUNDLE_KEY_DETAIL_URI);
         mBGGID = Contract.BoardgameEntry.getIDFromUri(mDetailUri);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

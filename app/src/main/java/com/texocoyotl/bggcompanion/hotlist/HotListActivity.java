@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -58,11 +57,11 @@ public class HotListActivity extends AppCompatActivity
 
     public static final int HOT_LIST_LOADER = 0;
     private static final String TAG = HotListActivity.class.getSimpleName() + "TAG_";
-    public static final String BUNDLE_KEY_DETAIL_URI = "DETAIL_URI";
+
     private HotListAdapter mAdapter;
     private Subscription mHotListSubscription;
 
-    @BindView(R.id.list)
+    @BindView(R.id.hotlist)
     RecyclerView mRecyclerView;
 
     @Override
@@ -271,7 +270,7 @@ public class HotListActivity extends AppCompatActivity
     public void onListFragmentInteraction(HotListItemData item) {
         Log.d(TAG, "onListFragmentInteraction: " + item.getName());
         Intent i = new Intent(this, DetailActivity.class);
-        i.putExtra(BUNDLE_KEY_DETAIL_URI, Contract.BoardgameEntry.buildBoardGameUri(item.getBggId()));
+        i.putExtra(DetailActivity.BUNDLE_KEY_DETAIL_URI, Contract.BoardgameEntry.buildBoardGameUri(item.getBggId()));
         startActivity(i);
     }
 }
