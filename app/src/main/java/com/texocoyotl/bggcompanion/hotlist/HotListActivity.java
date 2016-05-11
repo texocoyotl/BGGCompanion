@@ -195,12 +195,14 @@ public class HotListActivity extends AppCompatActivity
     }
 
     private void downloadHotListData() {
+        mLoadingPanel.setVisibility(View.VISIBLE);
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
         if (activeNetwork == null) {
-            Snackbar.make(mRecyclerView, getString(R.string.snackbar_no_internet), Snackbar.LENGTH_INDEFINITE)
+            mLoadingPanel.setVisibility(View.GONE);
+            Snackbar.make(mRecyclerView, getString(R.string.snackbar_no_internet_initial), Snackbar.LENGTH_INDEFINITE)
                     .setAction(getString(R.string.snackbar_action_retry), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.texocoyotl.bggcompanion.R;
@@ -32,6 +33,9 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
+
+    @BindView(R.id.loadingPanel)
+    RelativeLayout mLoadingPanel;
 
     private String mBGGID;
     private String mTitle;
@@ -66,6 +70,7 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
 
     @Override
     public void loadHeader(String url, String title) {
+        mLoadingPanel.setVisibility(View.GONE);
         Glide.with(this).load(url).into(mImageView);
         mTitle = title;
         mCollapsingToolBar.setTitle(title);
@@ -78,6 +83,16 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
             }
         });
 
+    }
+
+    @Override
+    public void stopLoadAnimation() {
+        mLoadingPanel.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void startLoadAnimation() {
+        mLoadingPanel.setVisibility(View.VISIBLE);
     }
 
     private Intent createShareIntent() {

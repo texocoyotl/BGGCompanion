@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -18,21 +17,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.texocoyotl.bggcompanion.BuildConfig;
 import com.texocoyotl.bggcompanion.R;
 import com.texocoyotl.bggcompanion.database.Contract;
 import com.texocoyotl.bggcompanion.database.DetailItemData;
-import com.texocoyotl.bggcompanion.hotlist.HotListActivity;
 import com.texocoyotl.bggcompanion.xmlpojo.APIServices;
 import com.texocoyotl.bggcompanion.xmlpojo.detail.DetailResult;
 import com.texocoyotl.bggcompanion.xmlpojo.detail.Item;
-
-import org.simpleframework.xml.core.ValueRequiredException;
 
 import java.util.List;
 
@@ -69,6 +63,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @BindView(R.id.detail_families) TextView mFamiliesView;
     @BindView(R.id.detail_designers) TextView mDesignersView;
     @BindView(R.id.detail_publishers) TextView mPublishersView;
+
 
     public DetailActivityFragment() {
     }
@@ -154,12 +149,14 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     }
 
     private void downloadDetailData() {
+        ((OnFragmentCallback) getContext()).startLoadAnimation();
 
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
         if (activeNetwork == null) {
-            Snackbar.make(mDescriptionView, getString(R.string.snackbar_no_internet), Snackbar.LENGTH_INDEFINITE)
+            ((OnFragmentCallback) mContext).stopLoadAnimation();
+            Snackbar.make(mDescriptionView, getString(R.string.snackbar_no_internet_initial), Snackbar.LENGTH_INDEFINITE)
                     .setAction(getString(R.string.snackbar_action_retry), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -235,12 +232,21 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof ValueRequiredException) Log.d(TAG, "onError: Parsing");
+                        ((OnFragmentCallback) mContext).stopLoadAnimation();
                         Log.d(TAG, "onError: " + e.getMessage());
+                        Snackbar.make(mDescriptionView, getString(R.string.snackbar_parse_error), Snackbar.LENGTH_INDEFINITE)
+                                .setAction(getString(R.string.snackbar_action_retry), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        downloadDetailData();
+                                    }
+                                })
+                                .show();
                     }
 
                     @Override
                     public void onNext(Integer result) {
+
                         if (result > 0)
                             getActivity().getSupportLoaderManager().restartLoader(DetailActivityFragment.DETAIL_LOADER, null, DetailActivityFragment.this);
                     }
@@ -249,5 +255,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
     public interface OnFragmentCallback{
         public void loadHeader(String url, String title);
+        public void stopLoadAnimation();
+        public void startLoadAnimation();
     }
 }

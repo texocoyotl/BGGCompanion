@@ -25,6 +25,21 @@
             app:expandedTitleMarginEnd="64dp"
             android:fitsSystemWindows="true">
 
+            <RelativeLayout
+                android:id="@+id/loadingPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:fitsSystemWindows="true"
+                >
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true" />
+            </RelativeLayout>
+
             <ImageView style="@style/detailImage"
                 android:id="@+id/detail_image"
                 android:layout_width="match_parent"
