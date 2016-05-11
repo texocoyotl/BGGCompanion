@@ -65,7 +65,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         final Item item = items.get(position);
 
-        holder.mYearPublishedView.setText(String.valueOf(item.getYearpublished().getValue()));
+        String year = "";
+        if (item.getYearpublished() != null) year = String.valueOf(item.getYearpublished().getValue());
+
+        holder.mYearPublishedView.setText(year);
         holder.mNameView.setText(item.getName().getValue());
 
         holder.mRow.setOnClickListener(new View.OnClickListener() {
