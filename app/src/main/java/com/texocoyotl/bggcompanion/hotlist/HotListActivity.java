@@ -6,9 +6,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -267,10 +270,15 @@ public class HotListActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(HotListItemData item) {
+    public void onListFragmentInteraction(View view, HotListItemData item) {
         Log.d(TAG, "onListFragmentInteraction: " + item.getName());
         Intent i = new Intent(this, DetailActivity.class);
         i.putExtra(DetailActivity.BUNDLE_KEY_DETAIL_URI, Contract.BoardgameEntry.buildBoardGameUri(item.getBggId()));
-        startActivity(i);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                new Pair<View, String>(view, getString(R.string.transition_name_image))
+        );
+        ActivityCompat.startActivity(HotListActivity.this, i, options.toBundle());
     }
 }

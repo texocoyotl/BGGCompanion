@@ -42,5 +42,7 @@
     <string name="search_edit_hint">Search for…</string>
     <string name="search_button_description">Search button</string>
 
+    <string name="transition_name_image">transition:IMAGE</string>
+
 
 </resources>

@@ -78,13 +78,13 @@ public class HotListAdapter extends CursorRecyclerViewAdapter<HotListAdapter.Vie
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
-                    ((OnListFragmentInteractionListener) mListener).onListFragmentInteraction(item);
+                    ((OnListFragmentInteractionListener) mListener).onListFragmentInteraction(holder.mThumbnailView, item);
                 }
             }
         });
     }
 
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(HotListItemData item);
+        void onListFragmentInteraction(View view, HotListItemData item);
     }
 }
