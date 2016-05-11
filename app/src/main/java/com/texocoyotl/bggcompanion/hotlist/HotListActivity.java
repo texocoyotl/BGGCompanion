@@ -3,11 +3,13 @@ package com.texocoyotl.bggcompanion.hotlist;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -64,6 +66,8 @@ public class HotListActivity extends AppCompatActivity
 
     public static final int HOT_LIST_LOADER = 0;
     private static final String TAG = HotListActivity.class.getSimpleName() + "TAG_";
+    private static final String lastDownloadKey = "LAST_DOWNLOAD";
+    private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
 
     private HotListAdapter mAdapter;
     private Subscription mHotListSubscription;
@@ -74,6 +78,7 @@ public class HotListActivity extends AppCompatActivity
     @BindView(R.id.loadingPanel)
     RelativeLayout mLoadingPanel;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +88,18 @@ public class HotListActivity extends AppCompatActivity
         setTitle(R.string.app_name_hotlist);
         initViews();
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        long lastSync = prefs.getLong(lastDownloadKey, 0);
+
+        if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) {
+            Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
+            getContentResolver().delete(bgUri, null, null);
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(lastDownloadKey, System.currentTimeMillis());
+            editor.apply();
+        }
+
         getSupportLoaderManager().initLoader(HOT_LIST_LOADER, null, this);
 
         //TODO: EVALUATE IF FETCHING DETAIL DATA IN TWO STEPS OR ONE BIG STEP
@@ -91,9 +108,6 @@ public class HotListActivity extends AppCompatActivity
     }
 
     private void initViews() {
-
-        Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
-        getContentResolver().delete(bgUri, null, null);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
