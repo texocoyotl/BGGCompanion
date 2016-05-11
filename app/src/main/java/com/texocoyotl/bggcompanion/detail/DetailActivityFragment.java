@@ -2,6 +2,8 @@ package com.texocoyotl.bggcompanion.detail;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -153,6 +155,21 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
     private void downloadDetailData() {
 
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        if (activeNetwork == null) {
+            Snackbar.make(mDescriptionView, getString(R.string.snackbar_no_internet), Snackbar.LENGTH_INDEFINITE)
+                    .setAction(getString(R.string.snackbar_action_retry), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            downloadDetailData();
+                        }
+                    })
+                    .show();
+            return;
+        }
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.BASE_API_URL)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
@@ -170,15 +187,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
-                        Snackbar.make(mDescriptionView, "You need Internet connection for the initial download", Snackbar.LENGTH_INDEFINITE)
-                                .setAction("Retry", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        downloadDetailData();
-                                    }
-                                })
-                                .show();
+                        Log.d(TAG, "onError: " + throwable.getMessage());
                     }
                 })
                 .map(new Func1<DetailResult, Integer>() {

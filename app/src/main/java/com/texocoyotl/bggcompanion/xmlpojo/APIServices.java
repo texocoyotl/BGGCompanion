@@ -10,8 +10,8 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 public interface APIServices {
-    @GET("hot")
-    Observable<HotListResult> getHotList(@Query("type") String type);
+    @GET("hot?type=boardgame")
+    Observable<HotListResult> getHotList();
 
     @GET("thing")
     Observable<DetailResult> getDetail(@Query("id") String id);

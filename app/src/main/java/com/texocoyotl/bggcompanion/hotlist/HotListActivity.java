@@ -1,8 +1,11 @@
 package com.texocoyotl.bggcompanion.hotlist;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -23,6 +26,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 
 import com.crashlytics.android.Crashlytics;
 import com.texocoyotl.bggcompanion.BuildConfig;
@@ -67,6 +71,9 @@ public class HotListActivity extends AppCompatActivity
     @BindView(R.id.hotlist)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.loadingPanel)
+    RelativeLayout mLoadingPanel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,18 +91,9 @@ public class HotListActivity extends AppCompatActivity
     }
 
     private void initViews() {
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//
-//                Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
-//                getContentResolver().delete(bgUri, null, null);
-//                //mAdapter.notifyDataSetChanged();
-//            }
-//        });
+
+        Uri bgUri = Contract.BoardgameEntry.CONTENT_URI;
+        getContentResolver().delete(bgUri, null, null);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -114,6 +112,7 @@ public class HotListActivity extends AppCompatActivity
 
         mAdapter = new HotListAdapter(this, null);
         mRecyclerView.setAdapter(mAdapter);
+
     }
 
     @Override
@@ -188,6 +187,7 @@ public class HotListActivity extends AppCompatActivity
         mAdapter.swapCursor(data);
 
         if (data.moveToFirst()) {
+            mLoadingPanel.setVisibility(View.GONE);
             Log.d(TAG, "logRows: " + data.getCount());
         } else {
             downloadHotListData();
@@ -195,6 +195,21 @@ public class HotListActivity extends AppCompatActivity
     }
 
     private void downloadHotListData() {
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        if (activeNetwork == null) {
+            Snackbar.make(mRecyclerView, getString(R.string.snackbar_no_internet), Snackbar.LENGTH_INDEFINITE)
+                    .setAction(getString(R.string.snackbar_action_retry), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            downloadHotListData();
+                        }
+                    })
+                    .show();
+            return;
+        }
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.BASE_API_URL)
@@ -204,21 +219,14 @@ public class HotListActivity extends AppCompatActivity
 
         APIServices apiService = retrofit.create(APIServices.class);
 
-        Observable<HotListResult> mHotListAPIcall = apiService.getHotList("boardgame");
+        Observable<HotListResult> mHotListAPIcall = apiService.getHotList();
 
         mHotListSubscription = mHotListAPIcall
                 .subscribeOn(Schedulers.newThread())
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Snackbar.make(mRecyclerView, "You need Internet connection for the initial download", Snackbar.LENGTH_INDEFINITE)
-                                .setAction("Retry", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        downloadHotListData();
-                                    }
-                                })
-                                .show();
+                        Log.d(TAG, "onError: " + throwable.getMessage());
                     }
                 })
                 .map(new Func1<HotListResult, Integer>() {
@@ -253,11 +261,21 @@ public class HotListActivity extends AppCompatActivity
 
                     @Override
                     public void onError(Throwable e) {
+                        mLoadingPanel.setVisibility(View.GONE);
                         Log.d(TAG, "onError: " + e.getMessage());
+                        Snackbar.make(mRecyclerView, getString(R.string.snackbar_parse_error), Snackbar.LENGTH_INDEFINITE)
+                                .setAction(getString(R.string.snackbar_action_retry), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        downloadHotListData();
+                                    }
+                                })
+                                .show();
                     }
 
                     @Override
                     public void onNext(Integer result) {
+                        mLoadingPanel.setVisibility(View.GONE);
                         if (result > 0)
                             getSupportLoaderManager().restartLoader(HotListActivity.HOT_LIST_LOADER, null, HotListActivity.this);
                     }

@@ -36,7 +36,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class SearchActivity extends AppCompatActivity implements SearchAdapter.OnListInteractionListener{
@@ -97,8 +96,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
         if (activeNetwork == null) {
-            Snackbar.make(mSearchEdit, getString(R.string.search_snackbar_no_internet), Snackbar.LENGTH_INDEFINITE)
-                    .setAction(getString(R.string.search_snackbar_action_retry), new View.OnClickListener() {
+            Snackbar.make(mSearchEdit, getString(R.string.snackbar_no_internet), Snackbar.LENGTH_INDEFINITE)
+                    .setAction(getString(R.string.snackbar_action_retry), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             downloadSearchResults(searchText);
