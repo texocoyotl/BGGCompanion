@@ -143,6 +143,10 @@ public class DetailItemData {
     public static ContentValues getContentValue(Item item) {
         ContentValues value = new ContentValues();
 
+        value.put(Contract.BoardgameEntry.COLUMN_BGG_ID, item.getId());
+        value.put(Contract.BoardgameEntry.COLUMN_NAME, item.getNames().get(0).getValue());
+        value.put(Contract.BoardgameEntry.COLUMN_YEAR_PUBLISHED, item.getYearpublished().getValue());
+
         value.put(Contract.BoardgameEntry.COLUMN_IMAGE, item.getImage());
         value.put(Contract.BoardgameEntry.COLUMN_DESCRIPTION, item.getDescription());
         value.put(Contract.BoardgameEntry.COLUMN_MIN_PLAYERS, item.getMinplayers().getValue());

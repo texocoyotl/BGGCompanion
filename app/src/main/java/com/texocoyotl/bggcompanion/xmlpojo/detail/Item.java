@@ -1,5 +1,9 @@
 package com.texocoyotl.bggcompanion.xmlpojo.detail;
 
+import com.texocoyotl.bggcompanion.xmlpojo.hotlist.Name;
+import com.texocoyotl.bggcompanion.xmlpojo.hotlist.YearPublished;
+
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
@@ -10,11 +14,20 @@ import java.util.List;
 @ElementList(name = "item", inline = true)
 public class Item {
 
+    @Attribute
+    private int id;
+
     @Element
     private String image;
 
+    @ElementList(name = "name", inline = true)
+    private List<Name> names;
+
     @Element
     private String description;
+
+    @Element
+    private YearPublished yearpublished;
 
     @Element
     private MinPlayers minplayers;
@@ -33,6 +46,18 @@ public class Item {
 
     @ElementList(name = "link", inline = true)
     private List<Link> links;
+
+    public int getId() {
+        return id;
+    }
+
+    public List<Name> getNames() {
+        return names;
+    }
+
+    public YearPublished getYearpublished() {
+        return yearpublished;
+    }
 
     public String getImage() {
         return image;
@@ -69,7 +94,10 @@ public class Item {
     @Override
     public String toString() {
         return "Item{" +
-                "image='" + image + '\'' +
+                "id=" + id +
+                ", names=" + names +
+                ", yearpublished=" + yearpublished +
+                ", image='" + image + '\'' +
                 ", description='" + description + '\'' +
                 ", minplayers=" + minplayers +
                 ", maxplayers=" + maxplayers +

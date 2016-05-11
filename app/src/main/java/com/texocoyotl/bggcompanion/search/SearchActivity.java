@@ -61,6 +61,12 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
     }
 
+    @Override
+    protected void onDestroy() {
+        if (mSearchSubscription != null) mSearchSubscription.unsubscribe();
+        super.onDestroy();
+    }
+
     @OnClick(R.id.a_search_button)
     void doSearch(View v){
         if (v != null) {

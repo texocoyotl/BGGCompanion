@@ -30,6 +30,8 @@ import com.texocoyotl.bggcompanion.xmlpojo.APIServices;
 import com.texocoyotl.bggcompanion.xmlpojo.detail.DetailResult;
 import com.texocoyotl.bggcompanion.xmlpojo.detail.Item;
 
+import org.simpleframework.xml.core.ValueRequiredException;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -168,6 +170,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+
                         Snackbar.make(mDescriptionView, "You need Internet connection for the initial download", Snackbar.LENGTH_INDEFINITE)
                                 .setAction("Retry", new View.OnClickListener() {
                                     @Override
@@ -198,6 +201,19 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
                         if (BuildConfig.DEBUG) Log.d(TAG, "Rows updated " + count + " " + Thread.currentThread());
 
+                        if (count == 0){
+                            //This means that the detail page was launched from a search, and as most of those games are not on the
+                            //hotlist, then we need to insert the new data
+
+                            Uri insertedGame = getActivity().getContentResolver().insert(
+                                    Contract.BoardgameEntry.CONTENT_URI,
+                                    DetailItemData.getContentValue(item)
+                            );
+
+                            if (BuildConfig.DEBUG) Log.d(TAG, "Row inserted " + insertedGame.toString() + " " + Thread.currentThread());
+                            if (insertedGame != null) count = 1;
+                        }
+
                         return count;
                     }
                 })
@@ -210,6 +226,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
                     @Override
                     public void onError(Throwable e) {
+                        if (e instanceof ValueRequiredException) Log.d(TAG, "onError: Parsing");
                         Log.d(TAG, "onError: " + e.getMessage());
                     }
 

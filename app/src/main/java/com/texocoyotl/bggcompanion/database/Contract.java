@@ -48,9 +48,9 @@ public class Contract {
                 _ID + " INTEGER PRIMARY KEY," +
                 COLUMN_BGG_ID + " INTEGER UNIQUE NOT NULL," +
                 COLUMN_NAME + " TEXT NOT NULL, " +
-                COLUMN_THUMBNAIL + " TEXT NOT NULL, " +
+                COLUMN_THUMBNAIL + " TEXT, " +
                 COLUMN_YEAR_PUBLISHED + " TEXT NOT NULL, " +
-                COLUMN_RANK + " INTEGER NOT NULL, " +
+                COLUMN_RANK + " INTEGER DEFAULT 0, " +
                 COLUMN_IMAGE + " TEXT," +
                 COLUMN_DESCRIPTION + " TEXT," +
                 COLUMN_MIN_PLAYERS + " INTEGER ," +
