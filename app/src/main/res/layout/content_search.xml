@@ -16,6 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:orientation="horizontal">
 
         <android.support.design.widget.TextInputLayout
@@ -34,10 +35,10 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <ImageButton
+        <Button
             android:id="@+id/a_search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/magnify"
             android:contentDescription="@string/search_button_description" />
 
@@ -56,7 +57,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/hot_list_row" />
+            tools:listitem="@android:layout/simple_list_item_1" />
 
 
     </FrameLayout>

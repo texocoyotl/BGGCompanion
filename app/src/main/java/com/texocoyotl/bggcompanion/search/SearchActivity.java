@@ -69,16 +69,13 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
     @OnClick(R.id.a_search_button)
     void doSearch(View v){
-        if (v != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(this.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-        }
+
 
         String searchText = mSearchEdit.getText().toString();
-        if (searchText.length() <= 0){
-            mSearchInputLayout.setError("Cannot be empty");
+        if (searchText.length() <= 3){
+            mSearchInputLayout.setError(getString(R.string.search_edit_size_error));
         } else {
-            mSearchInputLayout.setErrorEnabled(false);
+            mSearchInputLayout.setError(null);
 
             downloadListResults(searchText);
         }

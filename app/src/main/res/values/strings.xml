@@ -44,5 +44,7 @@
 
     <string name="transition_name_image">transition:IMAGE</string>
 
+    <string name="search_edit_size_error">"More than 3 characters needed"</string>
+
 
 </resources>
