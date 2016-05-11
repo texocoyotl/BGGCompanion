@@ -45,6 +45,9 @@
     <string name="transition_name_image">transition:IMAGE</string>
 
     <string name="search_edit_size_error">"More than 3 characters needed"</string>
+    <string name="search_snackbar_no_results">No results for that query</string>
+    <string name="search_snackbar_no_internet">You need Internet connection to search</string>
+    <string name="search_snackbar_action_retry">Retry</string>
 
 
 </resources>

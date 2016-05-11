@@ -1,6 +1,9 @@
 package com.texocoyotl.bggcompanion.search;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -11,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.texocoyotl.bggcompanion.BuildConfig;
 import com.texocoyotl.bggcompanion.R;
@@ -33,7 +37,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class SearchActivity extends AppCompatActivity implements SearchAdapter.OnListInteractionListener{
@@ -50,6 +53,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
     @BindView(R.id.search_list)
     RecyclerView mSearchResultsList;
+
+    @BindView(R.id.loadingPanel)
+    RelativeLayout mLoadingPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +82,32 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
             mSearchInputLayout.setError(getString(R.string.search_edit_size_error));
         } else {
             mSearchInputLayout.setError(null);
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-            downloadListResults(searchText);
+            mLoadingPanel.setVisibility(View.VISIBLE);
+            mSearchResultsList.setAdapter(null);
+            downloadSearchResults(searchText);
         }
     }
 
-    private void downloadListResults(final String searchText) {
+    private void downloadSearchResults(final String searchText) {
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        if (activeNetwork == null) {
+            Snackbar.make(mSearchEdit, getString(R.string.search_snackbar_no_internet), Snackbar.LENGTH_INDEFINITE)
+                    .setAction(getString(R.string.search_snackbar_action_retry), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            downloadSearchResults(searchText);
+                        }
+                    })
+                    .show();
+            return;
+        }
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.BASE_API_URL)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
@@ -90,23 +116,10 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
         APIServices apiService = retrofit.create(APIServices.class);
 
-        Observable<SearchResult> mSearchAPICall = apiService.getSearch("boardgame", searchText);
+        Observable<SearchResult> mSearchAPICall = apiService.getSearch(searchText);
 
         mSearchSubscription = mSearchAPICall
                 .subscribeOn(Schedulers.newThread())
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Snackbar.make(mSearchEdit, "You need Internet connection to search", Snackbar.LENGTH_INDEFINITE)
-                                .setAction("Retry", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        downloadListResults(searchText);
-                                    }
-                                })
-                                .show();
-                    }
-                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<SearchResult>() {
                     @Override
@@ -116,7 +129,10 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
                     @Override
                     public void onError(Throwable e) {
+                        mLoadingPanel.setVisibility(View.GONE);
                         Log.d(TAG, "onError: " + e.getMessage());
+                        Snackbar.make(mSearchEdit, getString(R.string.search_snackbar_no_results), Snackbar.LENGTH_SHORT)
+                                .show();
                     }
 
                     @Override
@@ -126,8 +142,12 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
                         if (BuildConfig.DEBUG) Log.d(TAG, "onNext: " + items);
 
-                        mAdapter = new SearchAdapter(SearchActivity.this, items);
-                        mSearchResultsList.setAdapter(mAdapter);
+                        mLoadingPanel.setVisibility(View.GONE);
+
+                        if (items.size() > 0) {
+                            mAdapter = new SearchAdapter(SearchActivity.this, items);
+                            mSearchResultsList.setAdapter(mAdapter);
+                        }
                     }
                 });
 

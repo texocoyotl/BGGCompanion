@@ -16,7 +16,7 @@ public interface APIServices {
     @GET("thing")
     Observable<DetailResult> getDetail(@Query("id") String id);
 
-    @GET("search")
-    Observable<SearchResult> getSearch(@Query("type") String type, @Query("query") String query);
+    @GET("search?type=boardgame")
+    Observable<SearchResult> getSearch(@Query("query") String query);
 
 }
